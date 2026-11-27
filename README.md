@@ -6,23 +6,6 @@
 
 An end-to-end machine learning project for estimating diabetes or prediabetes risk using the **CDC BRFSS 2015 Health Indicators dataset**. The project explores the data, compares multiple classifiers, tunes a decision threshold, evaluates model performance, and conducts subgroup fairness checks.
 
-> **Disclaimer:** This project is for educational and research purposes only. It is not a medical diagnostic tool and must not replace advice from a qualified healthcare professional.
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Dataset](#dataset)
-- [Project Workflow](#project-workflow)
-- [Models and Evaluation](#models-and-evaluation)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Running the Notebook](#running-the-notebook)
-- [Results and Interpretation](#results-and-interpretation)
-- [Limitations](#limitations)
-- [License](#license)
-- [Author](#author)
-- [References](#references)
-
 ## Overview
 
 This notebook builds a binary classification pipeline to identify survey respondents with diabetes or prediabetes from 21 health, lifestyle, and demographic indicators.
@@ -59,12 +42,6 @@ Example predictors include:
 - `PhysHlth` — days of poor physical health
 - `DiffWalk` — difficulty walking
 - `Sex`, `Age`, `Education`, and `Income`
-
-The CSV is not stored in this repository. Download it and place it in the repository root with the following name:
-
-```text
-diabetes_binary_health_indicators_BRFSS2015.csv
-```
 
 ## Project Workflow
 
@@ -117,62 +94,15 @@ Because the positive class is much less frequent than the negative class, accura
 └── requirements.txt
 ```
 
-## Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/zenithashikk/diabetes-prediction-ml-ashik-mahmud.git
-cd diabetes-prediction-ml-ashik-mahmud
-```
-
-### 2. Create a virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Activate it on macOS or Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Activate it on Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Add the dataset
-
-Download the CDC Diabetes Health Indicators dataset and place `diabetes_binary_health_indicators_BRFSS2015.csv` in the repository root.
-
-## Running the Notebook
-
-Start Jupyter Notebook:
-
-```bash
-jupyter notebook Diabetes_Prediction_System_ashik.ipynb
-```
-
-Alternatively, open the notebook in Google Colab or another Jupyter-compatible environment and ensure the CSV file is mounted or uploaded to the working directory.
-
 ## Results and Interpretation
 
-The notebook compares classifiers on a held-out test set and examines the effect of changing the classification threshold. Threshold tuning is especially important for imbalanced medical-risk datasets:
+The notebook compares classifiers on a held-out test set under an imbalanced target distribution (~86:14 ratio, roughly 86.07% No Diabetes vs. 13.93% Prediabetes or Diabetes) and examines the effect of changing the classification threshold.
 
-- A lower threshold generally increases recall but may also increase false positives.
-- A higher threshold generally increases precision but may miss more positive cases.
-- The appropriate threshold depends on the use case and the relative cost of false positives and false negatives.
+**Key highlights from the experiments:**
 
-Always review ROC-AUC, PR-AUC, confusion matrices, subgroup metrics, and the full classification report rather than relying on accuracy alone.
+- **Model Ranking (PR-AUC):** Evaluated against an 86.07% majority-class baseline, **Random Forest** achieved the strongest **PR-AUC at 0.4187** (compared to 0.3942 for Logistic Regression and 0.3939 for LinearSVC), while Logistic Regression provided well-behaved probability estimates alongside competitive ranking performance.
+- **Out-of-Fold Threshold Tuning:** Tuning the decision threshold strictly on out-of-fold training predictions from **0.50 to 0.2058 (≈ 0.21)** raised positive-class recall from **~15.8% (0.1579) to ~62% (0.6199)** while maintaining overall accuracy around **~79.5%–80%**.
+- **Precision–Recall Trade-Off:** A lower threshold increases recall and catches more at-risk respondents at the cost of more false positives, whereas a higher threshold increases precision while missing more positive cases. The choice depends on the screening goal and the relative cost of false positives versus false negatives.
 
 ## Limitations
 
@@ -181,8 +111,6 @@ Always review ROC-AUC, PR-AUC, confusion matrices, subgroup metrics, and the ful
 - The target combines prediabetes and diabetes into one positive class.
 - Duplicate records and class imbalance require careful interpretation.
 - Fairness gaps may reflect data quality, sampling, representation, or social conditions.
-- The model cannot capture every clinical factor relevant to diabetes risk.
-- Outputs should not be used for diagnosis or to replace clinical screening.
 
 ## License
 
